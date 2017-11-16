@@ -8,7 +8,14 @@ public class Board {
     static final char GOOSE   = 'o';
 
     private int boardsize;
-    private char[][] board;
+    private char[][] board;//{{INVALID,INVALID,GOOSE,GOOSE,GOOSE,INVALID,INVALID},
+    //        {INVALID,INVALID,GOOSE,FOX,GOOSE,INVALID,INVALID},
+    //        {GOOSE,GOOSE,GOOSE,GOOSE,GOOSE,GOOSE,GOOSE},
+    //        {FREE,GOOSE,FREE,GOOSE,FREE,GOOSE,FREE},
+    //        {GOOSE,FREE,FREE,FREE,FREE,FREE,GOOSE},
+    //        {INVALID,INVALID,FREE,FREE,FREE,INVALID,INVALID},
+    //        {INVALID,INVALID,FREE,FREE,FREE,INVALID,INVALID}}
+    //        ;
 
     // Default constructor was provided by the starter code. Extend as needed (kt54)
     public Board() {
@@ -35,8 +42,7 @@ public class Board {
                 if ((i < boardsize / 2 - 1 || i > boardsize/2 + 1) && (j < boardsize / 2 - 1 || j > boardsize/2 + 1))
                     board[i][j] = INVALID;
 
-        //board[boardsize/2][boardsize/2 + 2] = FOX;
-        board[3][0] = FOX;
+        board[boardsize/2][boardsize/2 + 2] = FOX;
     }
 
     // Prints the board. This method was provided with the starter code. Better not modify to ensure

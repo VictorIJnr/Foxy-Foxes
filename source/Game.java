@@ -31,6 +31,17 @@ public class Game {
         while(!done) {
             gameBoard.printBoard();
 
+            boolean foxWon = foxWin(),
+                    geeseWon = gooseWin();
+
+            done = foxWon || geeseWon;
+
+            if (foxWon) System.out.println(FOXWINS_MSG);
+            if (geeseWon) System.out.println(GEESEWIN_MSG);
+
+            if (done) break;
+
+
             if (geeseTurn) System.out.println(GEESEPLAY_MSG);
             if (!geeseTurn) System.out.println(FOXPLAYS_MSG);
 
@@ -44,11 +55,6 @@ public class Game {
                 continue;
             }
 
-            done = foxWin() || gooseWin();
-
-            if (foxWin()) System.out.println(FOXWINS_MSG);
-            if (gooseWin()) System.out.println(GEESEWIN_MSG);
-
             geeseTurn = !geeseTurn;
         }
     }
@@ -60,11 +66,17 @@ public class Game {
         int distance = (deltaX < 2 && deltaY < 2 && (deltaX == 1 || deltaY == 1)) ? 1 : 0;
         char[][] board = gameBoard.getBoard();
 
+        if (x1 < 0 || x1 >= board.length
+                || x2 < 0 || x2 >= board.length
+                || y1 < 0 || y1 >= board.length
+                || y2 < 0 || y2 >= board.length) return false;
+
         if(!geeseTurn)
             if(capture(x1, y1, x2, y2)) return true;
 
-
-        if(board[x2][y2] == Board.FREE && distance == 1) {
+        if(board[x2][y2] == Board.FREE && distance == 1
+                && ((geeseTurn && board[x1][y1] == Board.GOOSE)
+                || !geeseTurn && board[x1][y1] == Board.FOX)) {
             board[x2][y2] = board[x1][y1];
             board[x1][y1] = Board.FREE;
             gameBoard.setBoard(board);
@@ -100,7 +112,7 @@ public class Game {
     }
 
     private boolean gooseWin() {
-        return surrounded();
+        return surrounded() && cantMove();
     }
 
     private boolean surrounded() {
@@ -111,15 +123,14 @@ public class Game {
 
         char[][] board = gameBoard.getBoard();
 
-        for (int i = x - 1; i < x + 1; i++) {
-            for (int j = y - 1; j < y + 1; j++) {
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
                 if (i != x && j != y
                         && i > 0 && j > 0
                         && i < board.length && j < board[0].length)
-                    if (board[i][j] != Board.GOOSE && board[i][j] != Board.INVALID) return false;
+                    if (board[i][j] == Board.FREE) return false;
             }
         }
-
         return true;
     }
 
@@ -131,8 +142,13 @@ public class Game {
 
         char[][] board = gameBoard.getBoard();
 
-        for (int i = x - 2; i < x + 2; i++) {
-            //fori
+        for (int i = x - 2; i <= x + 2; i += 2) {
+            for (int j = y - 2; j <= y + 2; j += 2) {
+                if (i != x && j != y
+                        && i > 0 && j > 0
+                        && i < board.length && j < board[0].length)
+                if (board[i][j] == Board.FREE) return false;
+            }
         }
 
         return true;
